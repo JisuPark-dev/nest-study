@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './domain/users/users.module';
+import { OrdersModule } from './domain/orders/orders.module';
+import { AnalyticsModule } from './domain/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { UsersModule } from './domain/users/users.module';
       logging: process.env.NODE_ENV === 'development',
     }),
     UsersModule,
+    OrdersModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

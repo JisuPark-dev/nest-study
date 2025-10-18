@@ -257,3 +257,57 @@ TypeORM에서 MikroORM으로 전환 시:
 3. 트랜잭션 처리 로직 수정
 4. `save()` → `persistAndFlush()` 패턴 변경
 5. 쿼리 조건 문법 간소화 가능
+
+
+>⚡ Active Record 패턴
+
+“엔티티 스스로 DB에 접근한다.”
+
+✅ 개념
+
+엔티티 클래스 자체가 데이터 저장/조회 로직(save(), find(), remove())을 갖고 있음.
+
+객체와 DB 레코드가 거의 1:1로 대응하며, DB 접근이 직관적임.
+
+✅ 예시 (TypeORM의 Active Record 방식)
+```
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+
+@Entity()
+export class User extends BaseEntity {
+@PrimaryGeneratedColumn()
+id!: number;
+
+@Column()
+name!: string;
+}
+
+// 사용 예시
+const user = new User();
+user.name = 'Jisu';
+await user.save();            // 엔티티 자체가 DB에 저장됨
+const users = await User.find();  // 클래스 메서드로 조회
+```
+✅ 장점
+
+직관적이고 간단함 (특히 소규모 프로젝트에 적합)
+
+모델 중심으로 빠르게 CRUD 가능
+
+❌ 단점
+
+비즈니스 로직과 DB 로직이 섞임
+
+테스트, 유지보수, 확장성이 떨어짐 (특히 대형 서비스)
+
+> 🧠 Data Mapper 패턴
+
+“엔티티는 순수한 도메인 객체이고, DB 접근은 Repository가 담당한다.”
+
+✅ 개념
+
+엔티티는 데이터와 비즈니스 로직만 담당
+
+데이터베이스 관련 CRUD는 Repository나 EntityManager가 수행
+
+Unit of Work를 통해 변경 감지를 자동 관리 (MikroORM이 여기 강함)
